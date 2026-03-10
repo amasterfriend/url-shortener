@@ -1,0 +1,10 @@
+Name: shortener-api
+Host: 0.0.0.0
+Port: 8888
+
+ShortUrlDB:
+  DSN: root:123456@tcp(127.0.0.1:3306)/testdb?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+# 真正部署的时候，Sequence 与 shortUrlDB 是在两个数据库
+Sequence:
+  DSN: root:123456@tcp(127.0.0.1:3306)/testdb?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
