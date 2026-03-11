@@ -74,6 +74,13 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 		return nil, err
 	}
 	// 2. 取号
+	// 每来一个转链请求，我们就使用 replace into 语句往 sequence 表中插入一条数据，并且取出主键id作为号码
+	seq, err := l.svcCtx.Sequence.Next() // 取号
+	if err != nil {
+		logx.Error("Sequence.Next() failed", logx.LogField{Key: "err", Value: err.Error()})
+		return nil, err
+	}
+	fmt.Println(seq)
 	// 3. 号码转链
 	// 4. 存储长短链接映射关系
 	// 5. 返回响应
