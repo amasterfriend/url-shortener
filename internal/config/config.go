@@ -11,6 +11,9 @@ type Config struct {
 	Sequence   struct { // 匿名结构体
 		DSN string
 	}
+	BaseString        string   // base62指定的基础字符串
+	ShortUrlBlackList []string // 黑名单
+	ShortDomain       string   // 短链接域名
 }
 
 type ShortUrlDB struct { // 命名结构体
