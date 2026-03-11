@@ -43,6 +43,7 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 	if ok := connect.Get(req.LongUrl); !ok {
 		return nil, errors.New("输入的长链接无效，无法访问")
 	}
+
 	// 1.3 判断数据库是否已经转链过（数据库中是否已经存在该长链）
 	// 1.3.1 给长链接生成md5值
 	md5Value := md5.Sum([]byte(req.LongUrl)) // []byte(字符串) 表示强制类型转换，字符串 -> 字节型切片
