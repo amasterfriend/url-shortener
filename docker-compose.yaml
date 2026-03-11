@@ -1,0 +1,28 @@
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-shortener
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ~/mysql-data:/var/lib/mysql
+    networks:
+      - url-shortener
+  shortener-service:
+    image: dev-env
+    container_name: dev-shortener
+    ports:
+      - "8888:8888"
+    volumes:
+      - ~/workspace:/workspace
+    networks:
+      - url-shortener
+    command: go run shortener.go
+
+networks:
+  url-shortener:
+    driver: bridge
