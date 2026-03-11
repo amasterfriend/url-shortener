@@ -64,7 +64,7 @@ service shortener-api {
     post /convert (ConvertRequest) returns (ConvertResponse)
 
     @handler ShowHandler
-        get /:showUrl  (ShowRequest) returns (ShowResponse)
+    get /:showUrl  (ShowRequest) returns (ShowResponse)
 }
 ```
 2.2 根据api文件生成代码
