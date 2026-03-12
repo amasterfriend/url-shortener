@@ -106,6 +106,10 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 		logx.Errorw("ShortUrlMapModel.Insert failed", logx.LogField{Key: "err", Value: err.Error()})
 		return nil, err
 	}
+	// 将生成的短链接加入到布隆过滤器中
+	if err = l.svcCtx.Filter.Add([]byte(short)); err != nil {
+		logx.Errorw("BloomFilter.Add failed", logx.LogField{Key: "err", Value: err.Error()})
+	}
 	// 5. 返回响应
 	// 5.1 返回的是 短域名+短链接 q1mi.cn/1tys
 	shortUrl := l.svcCtx.Config.ShortDomain + "/" + short
