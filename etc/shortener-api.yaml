@@ -17,3 +17,7 @@ ShortUrlBlackList: ["fuck","stupid","version","convert","health","api", "admin",
 
 # 短域名
 ShortDomain: q1mi.cn
+
+# redis缓存
+CacheRedis:
+  - Host: redis-shortener:6379

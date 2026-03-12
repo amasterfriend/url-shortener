@@ -6,10 +6,12 @@ package handler
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"workspace/internal/logic"
 	"workspace/internal/svc"
 	"workspace/internal/types"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func ShowHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -20,12 +22,20 @@ func ShowHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		//校验请求参数
+		if err := validator.New().StructCtx(r.Context(), &req); err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+			return
+		}
+
 		l := logic.NewShowLogic(r.Context(), svcCtx)
 		resp, err := l.Show(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			// httpx.OkJsonCtx(r.Context(), w, resp)
+			// 返回重定向响应
+			http.Redirect(w, r, resp.LongUrl, http.StatusFound)
 		}
 	}
 }

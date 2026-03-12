@@ -12,6 +12,18 @@ services:
       - ~/mysql-data:/var/lib/mysql
     networks:
       - url-shortener
+
+  redis:
+    image: redis:7
+    container_name: redis-shortener
+    ports:
+      - "6379:6379"
+    volumes:
+      - ~/redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - url-shortener
+
   shortener-service:
     image: dev-env
     container_name: dev-shortener
@@ -22,6 +34,9 @@ services:
     networks:
       - url-shortener
     command: go run shortener.go
+    depends_on:
+      - mysql
+      - redis
 
 networks:
   url-shortener:

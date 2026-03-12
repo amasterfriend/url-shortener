@@ -3,7 +3,10 @@
 
 package config
 
-import "github.com/zeromicro/go-zero/rest"
+import (
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/rest"
+)
 
 type Config struct {
 	rest.RestConf
@@ -11,9 +14,11 @@ type Config struct {
 	Sequence   struct { // 匿名结构体
 		DSN string
 	}
-	BaseString        string   // base62指定的基础字符串
-	ShortUrlBlackList []string // 黑名单
-	ShortDomain       string   // 短链接域名
+	BaseString        string          // base62指定的基础字符串
+	ShortUrlBlackList []string        // 黑名单
+	ShortDomain       string          // 短链接域名
+	CacheRedis        cache.CacheConf // redis缓存,CacheRedis是一个切片
+
 }
 
 type ShortUrlDB struct { // 命名结构体

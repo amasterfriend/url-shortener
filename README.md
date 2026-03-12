@@ -75,8 +75,8 @@ goctl api go -api shortener.api -dir .
 3. 根据数据表生成model层代码
 
 ```bash
-goctl model mysql datasource -url="root:123456@tcp(127.0.0.1:3306)/testdb" -table="short_url_map" -dir="./model"
-goctl model mysql datasource -url="root:123456@tcp(127.0.0.1:3306)/testdb" -table="sequence" -dir="./model" 
+goctl model mysql datasource -url="root:123456@tcp(mysql-shortener:3306)/testdb" -table="short_url_map" -dir="./model"
+goctl model mysql datasource -url="root:123456@tcp(mysql-shortener:3306)/testdb" -table="sequence" -dir="./model" 
 ```
 
 4. 下载项目依赖
@@ -142,7 +142,9 @@ go get -u github.com/go-playground/validator/v10
  - 删除 shorturlmapmodel.go文件
 3. 重新生成model代码
 
+
 ```bash
-goctl model mysql datasource -url="root:root@tcp(127.0.0.1:3306)/shortener" -table="short_url_map" -dir="./model" -c
+goctl model mysql datasource -url="root:123456@tcp(mysql-shortener:3306)/testdb" -table="short_url_map" -dir="./model" -c
 ```
+-c 表示生成带缓存版本
 4.修改svccontext层代码
