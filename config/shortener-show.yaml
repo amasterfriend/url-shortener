@@ -1,0 +1,18 @@
+Name: shortener-show
+Host: 0.0.0.0
+Port: 8889
+
+ShortUrlDB:
+  DSN: root:123456@tcp(mysql-shortener:3306)/testdb?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+Sequence:
+  DSN: root:123456@tcp(mysql-shortener:3306)/testdb?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+BaseString: sE5nLm9XxKpQrT3vZaPdWc8VbN7YqRf2jA1kHtGhLzUwIoJdCqF0eN
+
+ShortUrlBlackList: ["fuck","stupid","version","convert","health","api", "admin", "root", "user", "login", "register", "auth", "oauth", "token", "password"]
+
+ShortDomain: q1mi.cn
+
+CacheRedis:
+  - Host: redis-shortener:6379

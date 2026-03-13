@@ -85,10 +85,22 @@ go mod tidy
 ```
 
 5. 运行项目
+- 5.1 运行单体项目
 ```bash
-go run shortener.go
+docker compose up -d
 
 显示Starting server at 0.0.0.0:8888...
+```
+- 5.2 拆分服务+ngnix
+```bash
+docker compose -f docker-compose.split.yaml up -d
+转链：POST http://localhost:8080/convert
+查看：GET http://localhost:8080/<short>
+```
+- 5.3 包含EFK
+``` bash
+docker compose -f docker-compose.split.yaml --profile observability up -d
+kibana地址：http://localhost:5601
 ```
 
 6. 修改配置结构和配置文件
@@ -141,10 +153,10 @@ go get -u github.com/go-playground/validator/v10
 2. 删除旧的model层代码
  - 删除 shorturlmapmodel.go文件
 3. 重新生成model代码
+4. 修改svccontext层代码
 
 
 ```bash
 goctl model mysql datasource -url="root:123456@tcp(mysql-shortener:3306)/testdb" -table="short_url_map" -dir="./model" -c
 ```
 -c 表示生成带缓存版本
-4.修改svccontext层代码

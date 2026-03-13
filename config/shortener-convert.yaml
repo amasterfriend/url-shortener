@@ -1,0 +1,23 @@
+Name: shortener-convert
+Host: 0.0.0.0
+Port: 8888
+
+ShortUrlDB:
+  DSN: root:123456@tcp(mysql-shortener:3306)/testdb?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+# Sequence db (same for now)
+Sequence:
+  DSN: root:123456@tcp(mysql-shortener:3306)/testdb?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+# base62 charset
+BaseString: sE5nLm9XxKpQrT3vZaPdWc8VbN7YqRf2jA1kHtGhLzUwIoJdCqF0eN
+
+# blacklist
+ShortUrlBlackList: ["fuck","stupid","version","convert","health","api", "admin", "root", "user", "login", "register", "auth", "oauth", "token", "password"]
+
+# short domain
+ShortDomain: q1mi.cn
+
+# redis cache
+CacheRedis:
+  - Host: redis-shortener:6379

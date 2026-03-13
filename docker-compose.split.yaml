@@ -1,0 +1,114 @@
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-shortener
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ~/mysql-data:/var/lib/mysql
+    networks:
+      - url-shortener
+
+  redis:
+    image: redis:7
+    container_name: redis-shortener
+    ports:
+      - "6379:6379"
+    volumes:
+      - ~/redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - url-shortener
+
+  shortener-convert:
+    image: dev-env
+    container_name: dev-shortener-convert
+    ports:
+      - "8888:8888"
+    volumes:
+      - ~/workspace:/workspace
+    networks:
+      - url-shortener
+    command: go run ./cmd/convert -f config/shortener-convert.yaml
+    depends_on:
+      - mysql
+      - redis
+
+  shortener-show:
+    image: dev-env
+    container_name: dev-shortener-show
+    ports:
+      - "8889:8889"
+    volumes:
+      - ~/workspace:/workspace
+    networks:
+      - url-shortener
+    command: go run ./cmd/show -f config/shortener-show.yaml
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    image: nginx:1.25
+    container_name: shortener-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./logs/nginx:/var/log/nginx
+    networks:
+      - url-shortener
+    depends_on:
+      - shortener-show
+      - shortener-convert
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    container_name: shortener-es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./data/es:/usr/share/elasticsearch/data
+    networks:
+      - url-shortener
+    profiles: ["observability"]
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.2
+    container_name: shortener-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - url-shortener
+    depends_on:
+      - elasticsearch
+    profiles: ["observability"]
+
+  fluent-bit:
+    image: fluent/fluent-bit:2.2
+    container_name: shortener-fluent-bit
+    volumes:
+      - ./deploy/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./deploy/fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - ./logs/nginx:/var/log/nginx:ro
+    networks:
+      - url-shortener
+    depends_on:
+      - nginx
+      - elasticsearch
+    profiles: ["observability"]
+
+networks:
+  url-shortener:
+    driver: bridge
